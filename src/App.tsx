@@ -89,7 +89,7 @@ function App() {
   }, [items]);
 
   return (
-    <div className="bg-[#282c34] w-screen h-screen items-center flex-1 flex justify-center flex-col">
+    <div className="bg-[#282c34] w-screen min-h-screen items-center flex-1 flex justify-center flex-col">
       {/* <div className="flex flex-row gap-3 absolute top-10">
         <input
           placeholder="english"
@@ -111,7 +111,7 @@ function App() {
       </div> */}
 
       <div className="flex flex-col gap-3 absolute top-0 right-0 left-0">
-        {!showTop && (
+        {showTop && (
           <div className="flex flex-col gap-1 sm:flex-row">
             <button
               onClick={() => {
@@ -122,7 +122,7 @@ function App() {
               Download
             </button>
             <textarea
-              className="w-full"
+              className="w-full max-sm:min-h-60"
               placeholder="english"
               onChange={(v) => setAreaText(v.target.value)}
             />
@@ -160,31 +160,32 @@ function App() {
         </button>
       </div>
 
-      <div className="text-white text-center text-2xl">
+      <div className="text-white text-center text-[30px] font-bold">
         <div>
           <div>{currentWord.english_word}</div>
           {showVN ? <div>{currentWord.vietnamese_word}</div> : <>_</>}
-          <div>
-            <button
-              className="bg-white text-sm text-black"
-              onClick={() => setShowVN(!showVN)}
-            >
-              Show / Hide
-            </button>
-          </div>
+          <div></div>
         </div>
       </div>
-      <button
-        onClick={() => {
-          const result = weightedRandomChoice(items);
-          setCurrentWord(result);
-          setShowVN(false);
-          updateItem(result);
-        }}
-        className="bg-white p-2 absolute bottom-10"
-      >
-        Next
-      </button>
+      <div className="absolute bottom-4 flex flex-col gap-8">
+        <button
+          className="bg-white text-sm text-black"
+          onClick={() => setShowVN(!showVN)}
+        >
+          Show / Hide
+        </button>
+        <button
+          onClick={() => {
+            const result = weightedRandomChoice(items);
+            setCurrentWord(result);
+            setShowVN(false);
+            updateItem(result);
+          }}
+          className="bg-white p-2 "
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 }
