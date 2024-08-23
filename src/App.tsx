@@ -12,12 +12,12 @@ let totalPercentage: number = 0;
 
 function App() {
   const [items, setItems] = useState(jsonWord);
-
+  const [showTop, setShowTop] = useState(false);
   const [showVN, setShowVN] = useState(false);
   const [currentWord, setCurrentWord] = useState(items[0]);
 
-  const [add_english_word, set_add_english_word] = useState("");
-  const [add_vietnamese_word, set_vietnamese_word] = useState("");
+  // const [add_english_word, set_add_english_word] = useState("");
+  // const [add_vietnamese_word, set_vietnamese_word] = useState("");
 
   const [areaText, setAreaText] = useState("");
 
@@ -57,18 +57,18 @@ function App() {
     return low;
   }
 
-  const saveStorage = () => {
-    if (!add_english_word || !add_vietnamese_word) return;
-    const currentTimestamp: number = Date.now();
-    const itemadd = {
-      id: currentTimestamp,
-      english_word: add_english_word,
-      vietnamese_word: add_vietnamese_word,
-      percentage: 20,
-    };
-    items.push(itemadd);
-    localStorage.setItem("list_word", JSON.stringify(items));
-  };
+  // const saveStorage = () => {
+  //   if (!add_english_word || !add_vietnamese_word) return;
+  //   const currentTimestamp: number = Date.now();
+  //   const itemadd = {
+  //     id: currentTimestamp,
+  //     english_word: add_english_word,
+  //     vietnamese_word: add_vietnamese_word,
+  //     percentage: 20,
+  //   };
+  //   items.push(itemadd);
+  //   localStorage.setItem("list_word", JSON.stringify(items));
+  // };
 
   const updateItem = (value: Item) => {
     const itemIndex = items.findIndex((item) => item.id === value.id);
@@ -90,15 +90,7 @@ function App() {
 
   return (
     <div className="bg-[#282c34] w-screen h-screen items-center flex-1 flex justify-center flex-col">
-      <button
-        onClick={() => {
-          downloadJson(items, "hehe.json");
-        }}
-        className="bg-white p-2 absolute top-0 left-0"
-      >
-        Download
-      </button>
-      <div className="flex flex-row gap-3 absolute top-10">
+      {/* <div className="flex flex-row gap-3 absolute top-10">
         <input
           placeholder="english"
           onChange={(v) => set_add_english_word(v.target.value)}
@@ -116,35 +108,58 @@ function App() {
         >
           Add
         </button>
-      </div>
-      <div className="flex flex-row gap-3 absolute top-0 right-0">
-        <textarea
-        className="min-w-[700px]"
-          placeholder="english"
-          onChange={(v) => setAreaText(v.target.value)}
-        />
+      </div> */}
+
+      <div className="flex flex-col gap-3 absolute top-0 right-0 left-0">
+        {!showTop && (
+          <div className="flex flex-col gap-1 sm:flex-row">
+            <button
+              onClick={() => {
+                downloadJson(items, "hehe.json");
+              }}
+              className="bg-white"
+            >
+              Download
+            </button>
+            <textarea
+              className="w-full"
+              placeholder="english"
+              onChange={(v) => setAreaText(v.target.value)}
+            />
+            <button
+              onClick={() => {
+                const wordsArray = parseTextToArray(areaText);
+                console.log(wordsArray);
+                for (let index = 0; index < wordsArray.length; index++) {
+                  const element = wordsArray[index];
+                  const currentTimestamp: number = Date.now();
+                  const itemadd = {
+                    id: currentTimestamp - index * 14,
+                    english_word: element.english_word,
+                    vietnamese_word: element.vietnamese_word,
+                    percentage: 30,
+                  };
+                  items.push(itemadd);
+                  localStorage.setItem("list_word", JSON.stringify(items));
+                }
+              }}
+              className="bg-white text-sm text-black"
+            >
+              SAVE
+            </button>
+          </div>
+        )}
+
         <button
           onClick={() => {
-            const wordsArray = parseTextToArray(areaText);
-            console.log(wordsArray);
-            for (let index = 0; index < wordsArray.length; index++) {
-              const element = wordsArray[index];
-              const currentTimestamp: number = Date.now();
-              const itemadd = {
-                id: currentTimestamp - index*14,
-                english_word: element.english_word,
-                vietnamese_word: element.vietnamese_word,
-                percentage: 30,
-              };
-              items.push(itemadd);
-              localStorage.setItem("list_word", JSON.stringify(items));
-            }
+            setShowTop(!showTop);
           }}
-          className="bg-white text-sm text-black"
+          className="bg-white w-max"
         >
-          SAVE
+          Show/Hide Top
         </button>
       </div>
+
       <div className="text-white text-center text-2xl">
         <div>
           <div>{currentWord.english_word}</div>
