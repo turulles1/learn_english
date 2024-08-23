@@ -167,9 +167,9 @@ function App() {
           <div></div>
         </div>
       </div>
-      <div className="absolute bottom-4 flex flex-col gap-8">
+      <div className="absolute bottom-4 flex flex-col gap-8 max-sm:w-full p-4">
         <button
-          className="bg-white text-sm text-black"
+          className="bg-white p-2"
           onClick={() => setShowVN(!showVN)}
         >
           Show / Hide
@@ -181,7 +181,7 @@ function App() {
             setShowVN(false);
             updateItem(result);
           }}
-          className="bg-white p-2 "
+          className="bg-white p-2"
         >
           Next
         </button>
