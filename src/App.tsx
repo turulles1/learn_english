@@ -221,7 +221,7 @@ function parseTextToArray(text: string) {
   // Chuyển đổi từng dòng thành đối tượng
   const result = lines.map((line) => {
     const [english_word, vietnamese_word] = line
-      .split(" : ")
+      .split(":")
       .map((s) => s.trim());
     return {
       english_word,
