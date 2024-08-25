@@ -72,9 +72,11 @@ function App() {
 
   const updateItem = (value: Item) => {
     const itemIndex = items.findIndex((item) => item.id === value.id);
-    if (items[itemIndex].percentage <= 0) return;
-    items[itemIndex].percentage = value.percentage - 1;
-    localStorage.setItem("list_word", JSON.stringify(items));
+    const newItems = [...items];
+    if (newItems[itemIndex].percentage <= 0) return;
+    newItems[itemIndex].percentage = value.percentage - 1;
+    localStorage.setItem("list_word", JSON.stringify(newItems));
+    setItems(newItems);
   };
 
   useEffect(() => {
@@ -129,7 +131,6 @@ function App() {
             <button
               onClick={() => {
                 const wordsArray = parseTextToArray(areaText);
-                console.log(wordsArray);
                 for (let index = 0; index < wordsArray.length; index++) {
                   const element = wordsArray[index];
                   const currentTimestamp: number = Date.now();
@@ -137,7 +138,7 @@ function App() {
                     id: currentTimestamp - index * 14,
                     english_word: element.english_word,
                     vietnamese_word: element.vietnamese_word,
-                    percentage: 30,
+                    percentage: 15,
                   };
                   items.push(itemadd);
                   localStorage.setItem("list_word", JSON.stringify(items));
