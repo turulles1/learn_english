@@ -79,6 +79,18 @@ function App() {
     setItems(newItems);
   };
 
+  const deleteItem = (value: Item) => {
+    const itemIndex = items.findIndex((item) => item.id === value.id);
+    if (itemIndex !== -1) {
+      const newItems = [...items];
+      newItems.splice(itemIndex, 1);
+      localStorage.setItem("list_word", JSON.stringify(newItems));
+      setItems(newItems);
+    } else {
+      console.log("Item not found");
+    }
+  };
+
   useEffect(() => {
     const stringItems = localStorage.getItem("list_word");
     if (stringItems) {
@@ -170,9 +182,17 @@ function App() {
       </div>
       <div className="absolute bottom-4 flex flex-col gap-8 max-sm:w-full p-4">
         <button
+          onClick={() => {
+            const result = weightedRandomChoice(items);
+            setCurrentWord(result);
+            setShowVN(false);
+            deleteItem(currentWord);
+          }}
           className="bg-white p-2"
-          onClick={() => setShowVN(!showVN)}
         >
+          Delete
+        </button>
+        <button className="bg-white p-2" onClick={() => setShowVN(!showVN)}>
           Show / Hide
         </button>
         <button
