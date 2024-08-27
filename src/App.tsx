@@ -171,6 +171,17 @@ function App() {
         >
           Show/Hide Top
         </button>
+        <button
+          onClick={() => {
+            const result = weightedRandomChoice(items);
+            setCurrentWord(result);
+            setShowVN(false);
+            deleteItem(currentWord);
+          }}
+          className="bg-white w-max"
+        >
+          Delete
+        </button>
       </div>
 
       <div className="text-white text-center text-[30px] font-bold">
@@ -181,17 +192,7 @@ function App() {
         </div>
       </div>
       <div className="absolute bottom-4 flex flex-col gap-8 max-sm:w-full p-4">
-        <button
-          onClick={() => {
-            const result = weightedRandomChoice(items);
-            setCurrentWord(result);
-            setShowVN(false);
-            deleteItem(currentWord);
-          }}
-          className="bg-white p-2"
-        >
-          Delete
-        </button>
+        
         <button className="bg-white p-2" onClick={() => setShowVN(!showVN)}>
           Show / Hide
         </button>
