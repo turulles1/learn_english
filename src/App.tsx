@@ -57,19 +57,6 @@ function App() {
     return low;
   }
 
-  // const saveStorage = () => {
-  //   if (!add_english_word || !add_vietnamese_word) return;
-  //   const currentTimestamp: number = Date.now();
-  //   const itemadd = {
-  //     id: currentTimestamp,
-  //     english_word: add_english_word,
-  //     vietnamese_word: add_vietnamese_word,
-  //     percentage: 20,
-  //   };
-  //   items.push(itemadd);
-  //   localStorage.setItem("list_word", JSON.stringify(items));
-  // };
-
   const updateItem = (value: Item) => {
     const itemIndex = items.findIndex((item) => item.id === value.id);
     const newItems = [...items];
@@ -104,26 +91,6 @@ function App() {
 
   return (
     <div className="bg-[#282c34] w-screen min-h-screen items-center flex-1 flex justify-center flex-col">
-      {/* <div className="flex flex-row gap-3 absolute top-10">
-        <input
-          placeholder="english"
-          onChange={(v) => set_add_english_word(v.target.value)}
-        />
-        <input
-          placeholder="vietnamese"
-          onChange={(v) => set_vietnamese_word(v.target.value)}
-        />
-        <button
-          onClick={() => {
-            console.log(add_english_word);
-            saveStorage();
-          }}
-          className="bg-white text-sm text-black"
-        >
-          Add
-        </button>
-      </div> */}
-
       <div className="flex flex-col gap-3 absolute top-0 right-0 left-0">
         {showTop && (
           <div className="flex flex-col gap-1 sm:flex-row">
@@ -145,9 +112,15 @@ function App() {
                 const wordsArray = parseTextToArray(areaText);
                 for (let index = 0; index < wordsArray.length; index++) {
                   const element = wordsArray[index];
-                  const currentTimestamp: number = Date.now();
+                  let currentTimestamp: number = Date.now() - index * 14;
+                
+                  // Kiểm tra xem id đã tồn tại chưa
+                  while (items.some(item => item.id === currentTimestamp)) {
+                    currentTimestamp += 1; // Nếu id trùng, tăng giá trị lên
+                  }
+                
                   const itemadd = {
-                    id: currentTimestamp - index * 14,
+                    id: currentTimestamp, // id đã được đảm bảo duy nhất
                     english_word: element.english_word,
                     vietnamese_word: element.vietnamese_word,
                     percentage: 15,
