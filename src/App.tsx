@@ -119,15 +119,8 @@ function App() {
                 const wordsArray = parseTextToArray(areaText);
                 for (let index = 0; index < wordsArray.length; index++) {
                   const element = wordsArray[index];
-                  let currentTimestamp: number = Date.now() - index * 14;
-
-                  // Kiểm tra xem id đã tồn tại chưa
-                  while (items.some((item) => item.id === currentTimestamp)) {
-                    currentTimestamp += 1; // Nếu id trùng, tăng giá trị lên
-                  }
-
                   const itemadd = {
-                    id: currentTimestamp, // id đã được đảm bảo duy nhất
+                    id: items[items.length-1].id + 1,
                     english_word: element.english_word,
                     vietnamese_word: element.vietnamese_word,
                     percentage: 15,
@@ -261,7 +254,8 @@ function parseTextToArray(text: string) {
       .map((s) => s.trim());
 
     // Tách English word và Pronounce (nếu có)
-    const match = vietnamesesWithPronounce.match(/^([^\(]+)\s*(\(([^)]+)\))?/);
+    const match = vietnamesesWithPronounce.match(/^([^(]+)\s*(\(([^)]+)\))?/);
+
     const vietnamese_word = match ? match[1].trim() : ""; // Lấy từ tiếng Anh
     const pronounce = match && match[3] ? match[3].trim() : ""; // Lấy phiên âm nếu có
 
