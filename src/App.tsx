@@ -6,6 +6,7 @@ type Item = {
   english_word: string;
   vietnamese_word: string;
   percentage: number;
+  pronounce: string;
 };
 let cumulativeArray: number[] = [];
 let totalPercentage: number = 0;
@@ -13,8 +14,9 @@ let totalPercentage: number = 0;
 function App() {
   const [items, setItems] = useState(jsonWord);
   const [showTop, setShowTop] = useState(false);
-  const [showVN, setShowVN] = useState(false);
+  const [showInfoWord, setShowInfoWord] = useState(false);
   const [currentWord, setCurrentWord] = useState(items[0]);
+  const [typeLearning, setTypeLearning] = useState(1);
 
   // const [add_english_word, set_add_english_word] = useState("");
   // const [add_vietnamese_word, set_vietnamese_word] = useState("");
@@ -38,7 +40,12 @@ function App() {
 
     // Tìm kiếm nhị phân để tối ưu việc tìm phần tử
     const index = binarySearch(cumulativeArray, randomNumber);
-    return items[index];
+
+    if (items[index].id === currentWord.id) {
+      return weightedRandomChoice(items);
+    } else {
+      return items[index];
+    }
   }
 
   // Hàm tìm kiếm nhị phân
@@ -113,17 +120,18 @@ function App() {
                 for (let index = 0; index < wordsArray.length; index++) {
                   const element = wordsArray[index];
                   let currentTimestamp: number = Date.now() - index * 14;
-                
+
                   // Kiểm tra xem id đã tồn tại chưa
-                  while (items.some(item => item.id === currentTimestamp)) {
+                  while (items.some((item) => item.id === currentTimestamp)) {
                     currentTimestamp += 1; // Nếu id trùng, tăng giá trị lên
                   }
-                
+
                   const itemadd = {
                     id: currentTimestamp, // id đã được đảm bảo duy nhất
                     english_word: element.english_word,
                     vietnamese_word: element.vietnamese_word,
                     percentage: 15,
+                    pronounce: element.pronounce,
                   };
                   items.push(itemadd);
                   localStorage.setItem("list_word", JSON.stringify(items));
@@ -148,32 +156,65 @@ function App() {
           onClick={() => {
             const result = weightedRandomChoice(items);
             setCurrentWord(result);
-            setShowVN(false);
+            setShowInfoWord(false);
             deleteItem(currentWord);
           }}
           className="bg-white w-max"
         >
           Delete
         </button>
+        <button
+          onClick={() => {
+            setTypeLearning(typeLearning === 1 ? 2 : 1);
+          }}
+          className="bg-white w-max"
+        >
+          Type learning: {typeLearning}
+        </button>
       </div>
 
-      <div className="text-white text-center text-[30px] font-bold">
-        <div>
-          <div>{currentWord.english_word}</div>
-          {showVN ? <div>{currentWord.vietnamese_word}</div> : <>_</>}
-          <div></div>
+      {typeLearning === 1 ? (
+        <div className="text-white text-center text-[30px] font-bold">
+          <div>
+            <div>{currentWord.english_word}</div>
+            {showInfoWord ? (
+              <div>
+                {currentWord.vietnamese_word + ` (${currentWord.pronounce})`}
+              </div>
+            ) : (
+              <>_</>
+            )}
+            <div></div>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="text-white text-center text-[30px] font-bold">
+          <div>
+            <div>{currentWord.vietnamese_word}</div>
+            {showInfoWord ? (
+              <div>
+                {currentWord.english_word + ` (${currentWord.pronounce})`}
+              </div>
+            ) : (
+              <>_</>
+            )}
+            <div></div>
+          </div>
+        </div>
+      )}
+
       <div className="absolute bottom-4 flex flex-col gap-8 max-sm:w-full p-4">
-        
-        <button className="bg-white p-2" onClick={() => setShowVN(!showVN)}>
+        <button
+          className="bg-white p-2"
+          onClick={() => setShowInfoWord(!showInfoWord)}
+        >
           Show / Hide
         </button>
         <button
           onClick={() => {
             const result = weightedRandomChoice(items);
             setCurrentWord(result);
-            setShowVN(false);
+            setShowInfoWord(false);
             updateItem(result);
           }}
           className="bg-white p-2"
@@ -215,12 +256,19 @@ function parseTextToArray(text: string) {
 
   // Chuyển đổi từng dòng thành đối tượng
   const result = lines.map((line) => {
-    const [english_word, vietnamese_word] = line
+    const [english_word, vietnamesesWithPronounce] = line
       .split(":")
       .map((s) => s.trim());
+
+    // Tách English word và Pronounce (nếu có)
+    const match = vietnamesesWithPronounce.match(/^([^\(]+)\s*(\(([^)]+)\))?/);
+    const vietnamese_word = match ? match[1].trim() : ""; // Lấy từ tiếng Anh
+    const pronounce = match && match[3] ? match[3].trim() : ""; // Lấy phiên âm nếu có
+
     return {
       english_word,
       vietnamese_word,
+      pronounce,
     };
   });
 

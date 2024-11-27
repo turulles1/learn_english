@@ -1,8 +1,9 @@
 [
   {
     "id": 1,
-    "english_word": "no1",
-    "vietnamese_word": "no_000",
-    "percentage": 1
+    "english_word": "no",
+    "vietnamese_word": "no",
+    "percentage": 1,
+    "pronounce": "no"
   }
 ]
